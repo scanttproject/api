@@ -7,6 +7,7 @@ using sca.Models;
 using Microsoft.EntityFrameworkCore;
 using sca.Services;
 using sca.Interfaces;
+using sca.Models.Request;
 
 namespace sca.Controllers
 {
@@ -16,9 +17,12 @@ namespace sca.Controllers
 	{
 		private ITokenService tokenService;
 		private SCADB db;
-		public UsuariosController(SCADB database, ITokenService tokenService)		{
-			this.db = database;
+		private IUserService _userService;
+        public UsuariosController(SCADB database, ITokenService tokenService, IUserService userService = null)
+        {
+            this.db = database;
             this.tokenService = tokenService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -32,38 +36,29 @@ namespace sca.Controllers
 		{
 			if (!ModelState.IsValid)
 				return BadRequest("Iinvalid information");
-				json.contrasenia = BCrypt.Net.BCrypt.HashPassword(json.contrasenia);
-				db.Usuarios.Add(json);
+			    json.contrasenia = EncryptServices.GetSHA256(json.contrasenia);
+
+                db.Usuarios.Add(json);
 				db.SaveChanges();
 			return Ok();
 		}
 
+        /// <summary>
+        /// login nuevo
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         [HttpPost]
-		[Route("[action]")]
-        public async Task<ActionResult> Login([FromBody] Usuarios json)
+        [Route("[action]")]
+        public ActionResult login(AuthRequest model)
         {
-           if(json.nombreusuario == null || json.contrasenia == null)
-			{
-                return BadRequest("Usuario y/o contraseña incorrectos");
-            }
-
-			var user = await db.Usuarios.Where(u => u.nombreusuario == json.nombreusuario).FirstOrDefaultAsync();
-
-            if (user == null)
+			var userresponser = _userService.Auth(model);
+			if(userresponser == null)
             {
-                return BadRequest("Usuario y/o contraseña incorrectos");
+				return BadRequest("Usuario o Contrasena Incorrecta");
+
             }
-
-			var verify = BCrypt.Net.BCrypt.Verify(user.contrasenia, json.contrasenia);
-
-            if (!verify)
-            {
-                return BadRequest("Usuario y/o contraseña incorrectos");
-            }
-
-			var token = this.tokenService.BuildToken("sddjjffgfjdkkdjhdfkhgf%&/sfgfgfd$%&/dghgfh%&H&%48487452", user);
-
-            return Ok(token);
+			return Ok(userresponser);
         }
 
         [HttpGet("{id}")]

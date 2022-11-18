@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using sca.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace sca.Controllers
 {
