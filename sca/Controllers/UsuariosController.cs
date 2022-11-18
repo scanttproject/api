@@ -7,6 +7,7 @@ using sca.Models;
 using Microsoft.EntityFrameworkCore;
 using sca.Services;
 using sca.Interfaces;
+using sca.Models.Request;
 
 namespace sca.Controllers
 {
@@ -16,9 +17,12 @@ namespace sca.Controllers
 	{
 		private ITokenService tokenService;
 		private SCADB db;
-		public UsuariosController(SCADB database, ITokenService tokenService)		{
-			this.db = database;
+		private IUserService _userService;
+        public UsuariosController(SCADB database, ITokenService tokenService, IUserService userService = null)
+        {
+            this.db = database;
             this.tokenService = tokenService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -37,6 +41,24 @@ namespace sca.Controllers
 				db.SaveChanges();
 			return Ok();
 		}
+
+		/// <summary>
+		/// login nuevo
+		/// </summary>
+		/// <param name="json"></param>
+		/// <returns></returns>
+		[HttpPost("loginnew")]
+		public ActionResult login(AuthRequest model)
+        {
+			var userresponser = _userService.Auth(model);
+			if(userresponser == null)
+            {
+				return BadRequest("Usuario o Contrasena Incorrecta");
+
+            }
+			return Ok(userresponser);
+        }
+
 
         [HttpPost]
 		[Route("[action]")]
