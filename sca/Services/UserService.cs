@@ -28,15 +28,25 @@ namespace sca.Services
         public UserResponse Auth(AuthRequest model)
         {
             UserResponse response = new UserResponse();
+<<<<<<< HEAD
             string spassword = EncryptServices.GetSHA256(model.contrasenia);
 
             var usuario = _contex.Usuarios.Where(r=>r.nombreusuario == model.nombreusuario && r.contrasenia == spassword).FirstOrDefault();
+=======
+            string spassword = EncryptServices.GetSHA256(model.Contrasenia);
+
+            var usuario = _contex.Usuarios.Where(r=>r.nombreusuario == model.Nombre && r.contrasenia == spassword).FirstOrDefault();
+>>>>>>> 5905e1518cdf0522d24825d7fbc96ab90115c8c3
 
             if (usuario == null)
             {
                 return null;
             }
+<<<<<<< HEAD
             response.nombreusuario = usuario.nombreusuario;
+=======
+            response.NombreUsuario = usuario.nombreusuario;
+>>>>>>> 5905e1518cdf0522d24825d7fbc96ab90115c8c3
             response.Token = GetToken(usuario);
             return response;
         }
@@ -68,8 +78,13 @@ namespace sca.Services
 
         private string GetPerfiles(int? perfilid)
         {
+<<<<<<< HEAD
             var profile = _contex.Perfiles.Where(p => p.id == perfilid).FirstOrDefault();
             return profile.descripcion;
+=======
+            var perfilId = _contex.Perfil.SingleOrDefault(r => r.idPerfil == perfilid).nombre.ToString();
+            return perfilId;
+>>>>>>> 5905e1518cdf0522d24825d7fbc96ab90115c8c3
         }
     }
 }
