@@ -43,32 +43,16 @@ namespace sca.Controllers
 			return Ok();
 		}
 
-<<<<<<< HEAD
         /// <summary>
         /// login nuevo
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-=======
-		/// <summary>
-		/// login nuevo
-		/// </summary>
-		/// <param name="json"></param>
-		/// <returns></returns>
-		[HttpPost("loginnew")]
-		public ActionResult login(AuthRequest model)
-        {
-			var userresponser = _userService.Auth(model);
-			if(userresponser == null)
-            {
-				return BadRequest("Usuario o Contrasena Incorrecta");
-
-            }
-			return Ok(userresponser);
-        }
-
-
->>>>>>> 5905e1518cdf0522d24825d7fbc96ab90115c8c3
+        /// <summary>
+        /// login nuevo
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("[action]")]
         public ActionResult login(AuthRequest model)
@@ -81,6 +65,9 @@ namespace sca.Controllers
             }
 			return Ok(userresponser);
         }
+
+       
+       
 
         [HttpGet("{id}")]
 		public async Task<ActionResult> Find(int? id)
